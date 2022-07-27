@@ -78,3 +78,59 @@ exports.getFoodList = () => {
             })
     });
 };
+
+exports.getLastXDayEntry = (days) => {
+    return new Promise((resolve, reject) => {
+        Food.find(
+            { 'createdAt': { '$gte': new Date((new Date().getTime() - (parseInt(days) * 24 * 60 * 60 * 1000))) } }
+        ).exec(function (err, food) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(food);
+            }
+        })
+    });
+}
+
+exports.getUsersAVGCalaries = (days) => {
+    return new Promise((resolve, reject) => {
+        Food.aggregate([
+
+            {
+                $match:
+                {
+                    'createdAt': { '$gte': new Date((new Date().getTime() - (parseInt(days) * 24 * 60 * 60 * 1000))) }
+                }
+            },
+
+            {
+                $group: {
+                    "_id": "$userId",
+                    "average": { $avg: "$calorie_value" }
+                }
+            }
+
+        ]).exec(function (err, food) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(food);
+            }
+        })
+    });
+}
+
+
+
+
+
+
+// Food.aggregate({
+//     "$match": {
+//         '_id.createdAt': { '$gte': new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000))) },
+//         "$group": {
+//             "_id": "userId",
+//             "average": { $avg: "calorie_value" }
+//         }
+//     })

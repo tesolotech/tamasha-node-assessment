@@ -87,3 +87,23 @@ async function getUserDailyLimit(userId) {
     }
     return data;
 }
+
+exports.getLastXDaysEntry = (req, res, next) => {
+    if (req.params.days) {
+        Foods.getLastXDayEntry(req.params.days).then((result) => {
+            res.status(200).json({ status: 200, message: 'SUCCESS', data: result })
+        }).catch(error => {
+            res.status(500).json({ status: 500, error: error });
+        })
+    }
+}
+
+exports.getUsersAverageCalories = (req, res, next) => {
+    if (req.params.days) {
+        Foods.getUsersAVGCalaries(req.params.days).then((result) => {
+            res.status(200).json({ status: 200, message: 'SUCCESS', data: result })
+        }).catch(error => {
+            res.status(500).json({ status: 500, error: error });
+        })
+    }
+}
